@@ -20,4 +20,4 @@ jobs:
       run: docker exec simpleapi-php-fpm vendor/phpstan/phpstan/phpstan
 
     - name: Run PHP-CS-Fixer
-      run: docker exec simpleapi-php-fpm vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run --allow-risky=yes --verbose --show-progress dots
+      run: docker exec -e PHP_CS_FIXER_IGNORE_ENV=1 simpleapi-php-fpm vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run --allow-risky=yes --verbose --show-progress dots
