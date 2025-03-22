@@ -11,7 +11,7 @@ jobs:
       name: Checkout latest commit
 
     - name: Set up Docker Compose
-      run: docker-compose up -d --build
+      run: docker compose up -d --build
 
     - name: Install Composer dependencies
       run: docker exec simpleapi-php-fpm composer install --no-interaction
