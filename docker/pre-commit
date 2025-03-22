@@ -7,4 +7,4 @@ docker exec -e PHP_CS_FIXER_IGNORE_ENV=1 -it simpleapi-php-fpm /application/vend
 
 docker exec -it simpleapi-php-fpm /application/vendor/phpstan/phpstan/phpstan
 
-docker exec -it simpleapiphp-fpm bin/phpunit
+docker exec -it simpleapi-php-fpm bin/phpunit
