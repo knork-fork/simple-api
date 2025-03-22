@@ -3,7 +3,7 @@
 # clear cache
 docker exec -it simpleapi-php-fpm composer dump-autoload
 
-docker exec -e PHP_CS_FIXER_IGNORE_ENV=1 -it simpleapi-php-fpm /application/vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run --allow-risky=yes --verbose --show-progress dots
+docker exec -e PHP_CS_FIXER_IGNORE_ENV=1 -it simpleapi-php-fpm /application/vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --allow-risky=yes --verbose --show-progress dots
 
 docker exec -it simpleapi-php-fpm /application/vendor/phpstan/phpstan/phpstan
 
