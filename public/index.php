@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use App\Exception\NotFoundException;
-use App\System\ExceptionResponse;
+use App\Response\ExceptionResponse;
 use App\System\Router;
 
 require __DIR__ . '/../vendor/autoload.php';
