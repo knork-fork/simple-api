@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\Exception\MethodNotAllowedException;
 use App\Exception\NotFoundException;
 use App\Response\ExceptionResponse;
 use App\System\Router;
@@ -14,10 +15,13 @@ $router = new Router($uri);
 try {
     $router->callEndpoint();
 } catch (Throwable $e) {
-    $exception = new ExceptionResponse($e);
+    // Suppress user-caused exceptions being thrown and logged
+    $suppressThrow = $e instanceof NotFoundException || $e instanceof MethodNotAllowedException;
+
+    $exception = new ExceptionResponse($e, $suppressThrow);
     $exception->output();
 
-    if (!$exception->suppressThrow && !$e instanceof NotFoundException) {
+    if (!$exception->suppressThrow) {
         throw $e;
     }
 }

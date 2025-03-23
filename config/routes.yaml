@@ -1,4 +1,4 @@
 status:
     path: /status
     controller: App\Controller\StatusController::status
-
+    method: GET
