@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\Unit;
+namespace App\Tests\Functional\Controller;
 
 use App\Tests\Common\FunctionalTestCase;
 use App\Tests\Common\Request;
