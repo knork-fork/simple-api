@@ -23,16 +23,20 @@ final class Router
 
     public function callEndpoint(): void
     {
-        [$class, $method] = $this->resolveEndpoint();
+        [$class, $method, $args] = $this->resolveEndpoint();
 
         $controller = new $class();
-        $response = $controller->{$method}();
+        if (\count($args) === 0) {
+            $response = $controller->{$method}();
+        } else {
+            $response = $controller->{$method}(...$args);
+        }
 
         $response->output();
     }
 
     /**
-     * @return string[]
+     * @return array{0: string, 1: string, 2: mixed[]}
      */
     private function resolveEndpoint(): array
     {
@@ -42,9 +46,24 @@ final class Router
             throw new RuntimeException('Invalid controller definition');
         }
 
+        // to-do: implement DTO parameters
+        // $dto = ParameterLoader::getDto($route['dto'], $this->request);
+
+        $uriParameters = ParameterLoader::getUriParameters($route['path'], $this->path);
+
+        /*if ($dto !== null) {
+            // DTO will always be passed as the first argument, followed by URI parameters
+            $args = array_merge([$dto], $uriParameters);
+        } else {
+            $args = $uriParameters;
+        }*/
+
+        $args = $uriParameters;
+
         return [
             $controller[0],
             $controller[1],
+            $args,
         ];
     }
 
