@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\System;
 
-use App\Exception\MethodNotAllowedException;
 use App\Exception\NotFoundException;
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
@@ -37,22 +36,8 @@ final class Router
      */
     private function resolveEndpoint(): array
     {
-        // Get all routes matching by path
-        $routes = $this->getRoutesMatchingByPath();
-        if (\count($routes) === 0) {
-            throw new NotFoundException('Path not found');
-        }
-
-        // Check if any matched route is available for current http method
-        $routes = $this->getRoutesMatchingByMethod($routes);
-        if (\count($routes) === 0) {
-            throw new MethodNotAllowedException('Method not allowed');
-        }
-        if (\count($routes) > 1) {
-            throw new RuntimeException('Config error, multiple routes found for the same method');
-        }
-
-        $controller = explode('::', $routes[0]['controller']);
+        $route = $this->getMatchingRoute();
+        $controller = explode('::', $route['controller']);
         if (\count($controller) !== 2) {
             throw new RuntimeException('Invalid controller definition');
         }
@@ -64,38 +49,44 @@ final class Router
     }
 
     /**
-     * @return array<string, string>[]
+     * @return array<string, string>
      */
-    private function getRoutesMatchingByPath(): array
+    private function getMatchingRoute(): array
     {
         /** @var array<string, array<string, string>> $routes */
         $routes = Yaml::parseFile(self::ROUTES_FILE);
 
         $matchingRoutes = [];
         foreach ($routes as $route) {
-            if ($route['path'] === $this->path) {
+            if ($this->doesRequestMatchConfiguredRoute($route)) {
                 $matchingRoutes[] = $route;
             }
         }
 
-        return $matchingRoutes;
+        if (\count($matchingRoutes) === 0) {
+            throw new NotFoundException('Path not found');
+        }
+        if (\count($matchingRoutes) > 1) {
+            throw new RuntimeException('Config error, multiple routes found for the same method');
+        }
+
+        return $matchingRoutes[0];
     }
 
     /**
-     * @param array<string, string>[] $routesMatchingByPath
-     *
-     * @return array<string, string>[]
+     * @param array<string, string> $route
      */
-    private function getRoutesMatchingByMethod(array $routesMatchingByPath): array
+    private function doesRequestMatchConfiguredRoute(array $route): bool
     {
-        $matchingRoutes = [];
-        foreach ($routesMatchingByPath as $route) {
-            if ($route['method'] === $this->method) {
-                $matchingRoutes[] = $route;
-            }
+        if ($route['method'] !== $this->method) {
+            return false;
         }
 
-        return $matchingRoutes;
+        if ($route['path'] !== $this->path) {
+            return false;
+        }
+
+        return true;
     }
 
     private function setPath(): void
