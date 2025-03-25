@@ -82,11 +82,7 @@ final class Router
             return false;
         }
 
-        if ($route['path'] !== $this->path) {
-            return false;
-        }
-
-        return true;
+        return PathMatcher::doesPathMatch($route['path'], $this->path);
     }
 
     private function setPath(): void
