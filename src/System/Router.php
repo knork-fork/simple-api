@@ -52,8 +52,7 @@ final class Router
             throw new RuntimeException('Config error, multiple routes found for the same method');
         }
 
-        $endpoint = array_pop($routes);
-        $controller = explode('::', $endpoint['controller']);
+        $controller = explode('::', $routes[0]['controller']);
         if (\count($controller) !== 2) {
             throw new RuntimeException('Invalid controller definition');
         }
@@ -65,7 +64,7 @@ final class Router
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @return array<string, string>[]
      */
     private function getRoutesMatchingByPath(): array
     {
@@ -73,9 +72,9 @@ final class Router
         $routes = Yaml::parseFile(self::ROUTES_FILE);
 
         $matchingRoutes = [];
-        foreach ($routes as $route => $endpoint) {
-            if ($endpoint['path'] === $this->path) {
-                $matchingRoutes[$route] = $endpoint;
+        foreach ($routes as $route) {
+            if ($route['path'] === $this->path) {
+                $matchingRoutes[] = $route;
             }
         }
 
@@ -83,16 +82,16 @@ final class Router
     }
 
     /**
-     * @param array<string, array<string, string>> $routesMatchingByPath
+     * @param array<string, string>[] $routesMatchingByPath
      *
-     * @return array<string, array<string, string>>
+     * @return array<string, string>[]
      */
     private function getRoutesMatchingByMethod(array $routesMatchingByPath): array
     {
         $matchingRoutes = [];
-        foreach ($routesMatchingByPath as $route => $endpoint) {
-            if ($endpoint['method'] === $this->method) {
-                $matchingRoutes[$route] = $endpoint;
+        foreach ($routesMatchingByPath as $route) {
+            if ($route['method'] === $this->method) {
+                $matchingRoutes[] = $route;
             }
         }
 
