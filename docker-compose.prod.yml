@@ -51,6 +51,9 @@ services:
             - '11000:80'
 
     php-fpm:
+        build:
+            context: .
+            dockerfile: phpdocker/php-fpm/Dockerfile.prod
         container_name: simpleapi-php-fpm
         restart: unless-stopped
         build: phpdocker/php-fpm
