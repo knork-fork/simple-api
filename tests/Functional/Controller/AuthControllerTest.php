@@ -1,0 +1,36 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Tests\Functional\Controller;
+
+use App\Tests\Common\FunctionalTestCase;
+use App\Tests\Common\Request;
+use App\Tests\Common\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+/**
+ * @internal
+ */
+final class AuthControllerTest extends FunctionalTestCase
+{
+    public function testIssueTokenReturnsResponseForValidInput(): void
+    {
+        $data = [
+            'secret' => 'password',
+            'description' => 'token description',
+            'expires' => '2026-03-26T00:00:00Z',
+            'is_read_only' => false,
+        ];
+        $response = $this->makeRequest(
+            Request::METHOD_POST,
+            '/auth/token',
+            $data
+        );
+
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_CREATED);
+        self::assertArrayHasKey('token_id', $json);
+        self::assertArrayHasKey('token', $json);
+        self::assertArrayHasKey('description', $json);
+        self::assertArrayHasKey('expires', $json);
+    }
+}

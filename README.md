@@ -56,7 +56,8 @@ Send a POST request to `/auth/token` with following payload:
 {
     "secret": "your_secret",
     "description": "optional_token_description",
-    "expires": "optional_token_expiration_date"
+    "expires": "optional_token_expiration_date",
+    "is_read_only": <true or false, default false>
 }
 ```
 

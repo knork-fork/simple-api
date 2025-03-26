@@ -15,3 +15,14 @@ test:
     request: App\Dto\TestRequestDto
     status_code: 200
     auth_required: false
+
+# Auth
+
+auth_token:
+    path: /auth/token
+    controller: App\Controller\AuthController::issueToken
+    method: POST
+    description: Get an API access token
+    request: App\Dto\Auth\TokenIssueRequest
+    status_code: 201
+    auth_required: false
