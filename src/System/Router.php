@@ -15,6 +15,7 @@ final class Endpoint
         public readonly string $controller,
         public readonly string $method,
         public readonly string $description,
+        public readonly ?string $requestDtoClass,
         public readonly int $statusCode,
         public readonly bool $authRequired,
     ) {
@@ -68,19 +69,18 @@ final class Router
             throw new RuntimeException('Invalid controller definition');
         }
 
-        // to-do: implement DTO parameters
-        // $dto = ParameterLoader::getDto($route['dto'], $this->request);
-
+        $dto = null;
+        if ($route->requestDtoClass !== null) {
+            $dto = ParameterLoader::getDto($route->requestDtoClass);
+        }
         $uriParameters = ParameterLoader::getUriParameters($route->path, $this->path);
 
-        /*if ($dto !== null) {
+        if ($dto !== null) {
             // DTO will always be passed as the first argument, followed by URI parameters
             $args = array_merge([$dto], $uriParameters);
         } else {
             $args = $uriParameters;
-        }*/
-
-        $args = $uriParameters;
+        }
 
         return [
             $route,
@@ -90,7 +90,7 @@ final class Router
 
     private function getMatchingRoute(): Endpoint
     {
-        /** @var array<string, array<string, string|int|bool>> $routes */
+        /** @var array<string, array<string, string|int|bool|null>> $routes */
         $routes = Yaml::parseFile(self::ROUTES_FILE);
 
         $matchingRoutes = [];
@@ -107,11 +107,14 @@ final class Router
             throw new RuntimeException('Config error, multiple routes found for the same method');
         }
 
+        $requestDto = $matchingRoutes[0]['request'] === null ? null : (string) $matchingRoutes[0]['request'];
+
         return new Endpoint(
             (string) $matchingRoutes[0]['path'],
             (string) $matchingRoutes[0]['controller'],
             (string) $matchingRoutes[0]['method'],
             (string) $matchingRoutes[0]['description'],
+            $requestDto,
             (int) $matchingRoutes[0]['status_code'],
             (bool) $matchingRoutes[0]['auth_required'],
         );

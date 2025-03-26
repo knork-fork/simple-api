@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\Exception\BadRequestException;
 use App\Exception\NotFoundException;
 use App\Response\ExceptionResponse;
 use App\System\Router;
@@ -31,7 +32,7 @@ try {
     $router->callEndpoint();
 } catch (Throwable $e) {
     // Suppress user-caused exceptions being thrown and logged
-    $suppressThrow = $e instanceof NotFoundException;
+    $suppressThrow = $e instanceof NotFoundException || $e instanceof BadRequestException;
 
     $exception = new ExceptionResponse($e, $suppressThrow);
     $exception->output();

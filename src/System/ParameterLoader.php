@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace App\System;
 
+use App\Dto\AbstractRequestDto;
+use App\Exception\BadRequestException;
+use RuntimeException;
+use Throwable;
+
 final class ParameterLoader
 {
     /**
@@ -25,5 +30,42 @@ final class ParameterLoader
         }
 
         return $parameters;
+    }
+
+    public static function getDto(?string $dtoClass): AbstractRequestDto
+    {
+        if (!\is_string($dtoClass) || !class_exists($dtoClass)) {
+            throw new RuntimeException('Invalid or missing DTO class.');
+        }
+        if (!is_subclass_of($dtoClass, AbstractRequestDto::class)) {
+            throw new RuntimeException(\sprintf('%s must extend AbstractRequestDto', $dtoClass));
+        }
+
+        $requestBody = file_get_contents('php://input');
+        if ($requestBody === false) {
+            throw new BadRequestException('Failed to read request body.');
+        }
+
+        $data = json_decode($requestBody, true);
+        if (!\is_array($data)) {
+            throw new BadRequestException('Invalid JSON payload.');
+        }
+
+        try {
+            $dto = self::loadDto($dtoClass, $data);
+        } catch (Throwable $e) {
+            throw new BadRequestException('Bad Request: ' . $e->getMessage());
+        }
+
+        return $dto;
+    }
+
+    /**
+     * @param class-string<AbstractRequestDto> $dtoClass
+     * @param array<mixed>                     $data
+     */
+    private static function loadDto(string $dtoClass, array $data): AbstractRequestDto
+    {
+        return new $dtoClass(...$data);
     }
 }
