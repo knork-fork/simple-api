@@ -40,6 +40,9 @@ abstract class FunctionalTestCase extends TestCase
             $params = [];
         }
 
+        // Set env override header
+        $headers[] = 'X-App-Env: test';
+
         if (!Request::isHeaderSet('Content-Type', $headers)) {
             $headers[] = 'Content-Type: application/json';
         }

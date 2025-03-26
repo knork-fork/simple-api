@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae5daad9c6c35f41bbc6c1fb94de64ae",
+    "content-hash": "1ce439b362735e6abd483bab52f6df80",
     "packages": [
+        {
+            "name": "knorkfork/load-environment",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/knork-fork/load-environment.git",
+                "reference": "b46d16b76b1d6db420b7ebd260952107e4f08570"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/knork-fork/load-environment/zipball/b46d16b76b1d6db420b7ebd260952107e4f08570",
+                "reference": "b46d16b76b1d6db420b7ebd260952107e4f08570",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.69",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KnorkFork\\LoadEnvironment\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luka Knezic",
+                    "email": "looka1998+packagist@gmail.com"
+                }
+            ],
+            "description": "Load environment variables from .env file",
+            "support": {
+                "issues": "https://github.com/knork-fork/load-environment/issues",
+                "source": "https://github.com/knork-fork/load-environment/tree/v1.0.0"
+            },
+            "time": "2025-02-21T23:09:01+00:00"
+        },
         {
             "name": "symfony/deprecation-contracts",
             "version": "v3.5.1",
