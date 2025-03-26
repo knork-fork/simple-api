@@ -17,6 +17,7 @@ final class TestController
             'request_dto' => [
                 'body_parameter_1' => $testRequestDto->body_parameter_1,
                 'body_parameter_2' => $testRequestDto->body_parameter_2,
+                'optional_string_parameter' => $testRequestDto->optional_string_parameter,
             ],
         ]);
     }

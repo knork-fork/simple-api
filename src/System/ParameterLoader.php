@@ -54,7 +54,11 @@ final class ParameterLoader
         try {
             $dto = self::loadDto($dtoClass, $data);
         } catch (Throwable $e) {
-            throw new BadRequestException('Bad Request: ' . $e->getMessage());
+            $message = $e->getMessage();
+            if (str_starts_with($message, 'Too few arguments to function')) {
+                $message = 'Too few arguments to function';
+            }
+            throw new BadRequestException('Bad Request: ' . $message);
         }
 
         return $dto;
