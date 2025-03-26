@@ -19,7 +19,7 @@ final class StatusControllerTest extends FunctionalTestCase
             '/status'
         );
 
-        $json = $this->decodeJsonFromSuccessfulResponse($response);
+        $json = $this->decodeJsonFromResponse($response);
         self::assertArrayHasKey('status', $json);
         self::assertSame('ok', $json['status']);
     }
@@ -31,7 +31,7 @@ final class StatusControllerTest extends FunctionalTestCase
             '/status'
         );
 
-        $json = $this->decodeJsonFromSuccessfulResponse($response, Response::HTTP_NOT_FOUND);
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_NOT_FOUND);
         self::assertArrayHasKey('error', $json);
         self::assertSame('Path not found', $json['error']);
     }
@@ -43,7 +43,7 @@ final class StatusControllerTest extends FunctionalTestCase
             '/no-route'
         );
 
-        $json = $this->decodeJsonFromSuccessfulResponse($response, Response::HTTP_NOT_FOUND);
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_NOT_FOUND);
         self::assertArrayHasKey('error', $json);
         self::assertSame('Path not found', $json['error']);
     }

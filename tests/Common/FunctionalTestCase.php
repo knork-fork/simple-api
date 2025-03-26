@@ -90,7 +90,7 @@ abstract class FunctionalTestCase extends TestCase
     /**
      * @return mixed[]
      */
-    protected function decodeJsonFromSuccessfulResponse(Response $response, ?int $expectedStatusCode = Response::HTTP_OK): array
+    protected function decodeJsonFromResponse(Response $response, ?int $expectedStatusCode = Response::HTTP_OK): array
     {
         self::assertSame($expectedStatusCode, $response->getStatusCode(), 'Response status code invalid.');
         self::assertJson($response->getContent());

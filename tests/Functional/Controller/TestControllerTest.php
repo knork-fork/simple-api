@@ -18,7 +18,7 @@ final class TestControllerTest extends FunctionalTestCase
             '/test/blabla/123'
         );
 
-        $json = $this->decodeJsonFromSuccessfulResponse($response);
+        $json = $this->decodeJsonFromResponse($response);
 
         self::assertArrayHasKey('method', $json);
         self::assertSame('POST', $json['method']);
