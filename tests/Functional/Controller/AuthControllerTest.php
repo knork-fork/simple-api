@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Controller;
 use App\Tests\Common\FunctionalTestCase;
 use App\Tests\Common\Request;
 use App\Tests\Common\Response;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @internal

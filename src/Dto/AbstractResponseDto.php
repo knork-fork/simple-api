@@ -6,7 +6,7 @@ namespace App\Dto;
 abstract class AbstractResponseDto
 {
     /**
-     * @return mixed[] 
+     * @return mixed[]
      */
     public function toArray(): array
     {
