@@ -25,10 +25,10 @@ abstract class Response
     ) {
     }
 
-    public function output(): void
+    public function output(?int $statusCode = null): void
     {
         header('Content-Type: application/json');
-        http_response_code($this->statusCode);
+        http_response_code($statusCode ?? $this->statusCode);
         echo json_encode($this->data);
     }
 }

@@ -3,9 +3,13 @@ status:
     controller: App\Controller\StatusController::status
     method: GET
     description: Check if application is online
+    status_code: 200
+    auth_required: false
 
 test:
     path: /test/{parameter}/{parameter2}
     controller: App\Controller\TestController::test
     method: POST
     description: Test endpoint used for testing parameters and DTOs
+    status_code: 200
+    auth_required: false

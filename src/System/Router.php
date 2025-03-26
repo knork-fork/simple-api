@@ -4,8 +4,22 @@ declare(strict_types=1);
 namespace App\System;
 
 use App\Exception\NotFoundException;
+use App\Response\Response;
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
+
+final class Endpoint
+{
+    public function __construct(
+        public readonly string $path,
+        public readonly string $controller,
+        public readonly string $method,
+        public readonly string $description,
+        public readonly int $statusCode,
+        public readonly bool $authRequired,
+    ) {
+    }
+}
 
 final class Router
 {
@@ -23,7 +37,14 @@ final class Router
 
     public function callEndpoint(): void
     {
-        [$class, $method, $args] = $this->resolveEndpoint();
+        [$endpoint, $args] = $this->resolveEndpoint();
+
+        $controller = explode('::', $endpoint->controller);
+        if (\count($controller) !== 2) {
+            throw new RuntimeException('Invalid controller definition');
+        }
+        $class = $controller[0];
+        $method = $controller[1];
 
         $controller = new $class();
         if (\count($args) === 0) {
@@ -32,16 +53,17 @@ final class Router
             $response = $controller->{$method}(...$args);
         }
 
-        $response->output();
+        /* @var Response $response */
+        $response->output($endpoint->statusCode);
     }
 
     /**
-     * @return array{0: string, 1: string, 2: mixed[]}
+     * @return array{0: Endpoint, 1: mixed[]}
      */
     private function resolveEndpoint(): array
     {
         $route = $this->getMatchingRoute();
-        $controller = explode('::', $route['controller']);
+        $controller = explode('::', $route->controller);
         if (\count($controller) !== 2) {
             throw new RuntimeException('Invalid controller definition');
         }
@@ -49,7 +71,7 @@ final class Router
         // to-do: implement DTO parameters
         // $dto = ParameterLoader::getDto($route['dto'], $this->request);
 
-        $uriParameters = ParameterLoader::getUriParameters($route['path'], $this->path);
+        $uriParameters = ParameterLoader::getUriParameters($route->path, $this->path);
 
         /*if ($dto !== null) {
             // DTO will always be passed as the first argument, followed by URI parameters
@@ -61,23 +83,19 @@ final class Router
         $args = $uriParameters;
 
         return [
-            $controller[0],
-            $controller[1],
+            $route,
             $args,
         ];
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private function getMatchingRoute(): array
+    private function getMatchingRoute(): Endpoint
     {
-        /** @var array<string, array<string, string>> $routes */
+        /** @var array<string, array<string, string|int|bool>> $routes */
         $routes = Yaml::parseFile(self::ROUTES_FILE);
 
         $matchingRoutes = [];
         foreach ($routes as $route) {
-            if ($this->doesRequestMatchConfiguredRoute($route)) {
+            if ($this->doesRequestMatchConfiguredRoute((string) $route['method'], (string) $route['path'])) {
                 $matchingRoutes[] = $route;
             }
         }
@@ -89,19 +107,23 @@ final class Router
             throw new RuntimeException('Config error, multiple routes found for the same method');
         }
 
-        return $matchingRoutes[0];
+        return new Endpoint(
+            (string) $matchingRoutes[0]['path'],
+            (string) $matchingRoutes[0]['controller'],
+            (string) $matchingRoutes[0]['method'],
+            (string) $matchingRoutes[0]['description'],
+            (int) $matchingRoutes[0]['status_code'],
+            (bool) $matchingRoutes[0]['auth_required'],
+        );
     }
 
-    /**
-     * @param array<string, string> $route
-     */
-    private function doesRequestMatchConfiguredRoute(array $route): bool
+    private function doesRequestMatchConfiguredRoute(string $method, string $path): bool
     {
-        if ($route['method'] !== $this->method) {
+        if ($method !== $this->method) {
             return false;
         }
 
-        return PathMatcher::doesPathMatch($route['path'], $this->path);
+        return PathMatcher::doesPathMatch($path, $this->path);
     }
 
     private function setPath(): void
