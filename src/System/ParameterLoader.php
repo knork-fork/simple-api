@@ -57,7 +57,14 @@ final class ParameterLoader
             $message = $e->getMessage();
             if (str_starts_with($message, 'Too few arguments to function')) {
                 $message = 'Too few arguments to function';
+            } elseif (str_contains($message, 'must be of type')) {
+                $message = 'Wrong type for argument';
+            } elseif (str_contains($message, 'Unknown named parameter')) {
+                $message = $message;
+            } else {
+                $message = 'Invalid arguments';
             }
+
             throw new BadRequestException('Bad Request: ' . $message);
         }
 
