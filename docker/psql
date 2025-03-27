@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker exec -e PGPASSWORD=simpleapi_pass -it simpleapi-db psql -h simpleapi-postgres  -U simpleapi_user simpleapi_db
+docker exec -e PGPASSWORD=simpleapi_pass -e HOME=/tmp -it simpleapi-db psql --no-psqlrc -X -h simpleapi-postgres  -U simpleapi_user simpleapi_db
