@@ -37,13 +37,14 @@ docker-compose down
 
 ##### Identify as a New User
 
-There are no user accounts.
-Instead, generate your own secret which will be used to obtain access tokens. Store it securely — it acts as your private key.
+Generate your own secret which will be used to obtain access tokens. Store it securely — it acts as your private key.
 
 You can create a secret manually, or generate one using a secure algorithm like RSA.
 It’s important that your secret is unique, strong, and never shared.
 
 The server stores a hashed and salted version of your secret, assigns a unique user ID, and creates a dedicated schema for your data.
+
+Same username and secret combination will always return a token for the same database schema, that is the pair always corresponds to same unique user id.
 
 If you ever need to share access, share only the generated tokens, not your secret.
 Tokens can be revoked at any time and may optionally include an expiration date.
@@ -54,6 +55,7 @@ Send a POST request to `/auth/token` with following payload:
 
 ```json
 {
+    "username": "your username or email",
     "secret": "your_secret",
     "description": "optional_token_description",
     "expires": "optional_token_expiration_date",

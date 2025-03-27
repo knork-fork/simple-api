@@ -8,6 +8,7 @@ use App\Dto\AbstractRequestDto;
 final class TokenIssueRequest extends AbstractRequestDto
 {
     public function __construct(
+        public readonly string $username,
         public readonly string $secret,
         public readonly ?string $description = null,
         public readonly ?string $expires = null,

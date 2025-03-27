@@ -12,9 +12,12 @@ use App\Tests\Common\Response;
  */
 final class AuthControllerTest extends FunctionalTestCase
 {
+    public const TEST_USER = 'test_user';
+
     public function testIssueTokenReturnsResponseForValidInput(): void
     {
         $data = [
+            'username' => self::TEST_USER,
             'secret' => 'password',
             'description' => 'token description',
             'expires' => '2026-03-26T00:00:00Z',
