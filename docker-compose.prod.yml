@@ -16,7 +16,7 @@ services:
             - POSTGRES_PASSWORD=simpleapi_pass
             - POSTGRES_DB=simpleapi_db
         ports:
-            - '11004:5432'
+            - '11004:5435'
 
     pgbouncer:
         container_name: simpleapi-db
@@ -27,7 +27,7 @@ services:
         extra_hosts:
             - 'giscloud.local:172.30.0.1'
         ports:
-            - 5432:5432
+            - 5435:5435
         environment:
             DB_USER: simpleapi_user
             DB_PASSWORD: simpleapi_pass
