@@ -12,7 +12,7 @@ git clone https://github.com/longxinH/xhprof.git
 cd xhprof/xhprof_html && XHPROF_OUTPUT_DIR="$(realpath ../../../var/logs/xhprof)" php -S localhost:8181
 ```
 
-Then, navigate to `http://localhost:8142` to view the results.
+Then, navigate to `http://localhost:8181` to view the results.
 
 To view the profiling results, first run any route with `?profile=1`, e.g.:
 
