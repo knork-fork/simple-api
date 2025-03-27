@@ -60,6 +60,7 @@ services:
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.4/fpm/conf.d/99-overrides.ini'
             - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.4/cli/conf.d/99-overrides.ini'
             - './var/logs:/var/log'
+            - './phpdocker/php-fpm/xhprof-prepend.php:/etc/php/xhprof-prepend.php'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         environment:

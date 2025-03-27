@@ -6,5 +6,8 @@ mkdir -p /var/log
 chown www-data:www-data /var/log
 chmod 775 /var/log
 
+mkdir -p /var/log/xhprof
+chmod 777 /var/log/xhprof
+
 # Run the original entrypoint (if any) or PHP-FPM
 exec "$@"
