@@ -6,9 +6,18 @@ use App\Exception\NotFoundException;
 use App\Response\ExceptionResponse;
 use App\System\Router;
 use KnorkFork\LoadEnvironment\Environment;
+use Symfony\Component\Yaml\Yaml;
 
 // Load Composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
+
+// Build route cache
+$yamlPath = '/application/config/routes.yaml';
+$cachePath = '/application/config/routes.cache.php';
+if (!file_exists($cachePath) || filemtime($yamlPath) > filemtime($cachePath)) {
+    $parsed = Yaml::parseFile($yamlPath);
+    file_put_contents($cachePath, '<?php return ' . var_export($parsed, true) . ';');
+}
 
 // Load environment variables
 Environment::load(__DIR__ . '/../.env');

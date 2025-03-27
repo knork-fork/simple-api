@@ -6,7 +6,6 @@ namespace App\System;
 use App\Exception\NotFoundException;
 use App\Response\Response;
 use RuntimeException;
-use Symfony\Component\Yaml\Yaml;
 
 final class Endpoint
 {
@@ -24,7 +23,7 @@ final class Endpoint
 
 final class Router
 {
-    private const ROUTES_FILE = __DIR__ . '/../../config/routes.yaml';
+    private const ROUTES_FILE = __DIR__ . '/../../config/routes.cache.php';
 
     private string $path;
     private string $method;
@@ -91,7 +90,7 @@ final class Router
     private function getMatchingRoute(): Endpoint
     {
         /** @var array<string, array<string, string|int|bool|null>> $routes */
-        $routes = Yaml::parseFile(self::ROUTES_FILE);
+        $routes = require self::ROUTES_FILE;
 
         $matchingRoutes = [];
         foreach ($routes as $route) {
