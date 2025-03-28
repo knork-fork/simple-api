@@ -4,13 +4,13 @@ current_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 if [[ $1 = "dev" ]]
 then
-  db_name="simpleapi_db"
+  	db_name="simpleapi_db"
 elif [[ $1 = "test" ]]
 then
-  db_name="simpleapi_db_test"
+  	db_name="simpleapi_db_test"
 else
-  echo 'Missing environment! Run with "init-db.sh <env>"'
-  exit 1
+  	echo 'Missing environment! Run with "init-db.sh <env>"'
+  	exit 1
 fi
 
 echo "Running init-db.sh for ${db_name}..."
