@@ -41,3 +41,9 @@ then
     echo "Failed importing database dump to ${db_name}."
     exit 2
 fi
+
+# Run fixtures for test environment
+if [[ $1 = "test" ]]
+then
+	docker exec -it simpleapi-php-fpm php /application/tests/run_fixtures.php
+fi
