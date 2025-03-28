@@ -26,3 +26,99 @@ auth_token:
     request: App\Dto\Auth\TokenIssueRequest
     status_code: 201
     auth_required: false
+
+auth_list:
+    path: /auth/token
+    controller: App\Controller\AuthController::listTokens
+    method: GET
+    description: List hashes of active API access tokens
+    request: null
+    response: App\Dto\Auth\TokenListResponse
+    status_code: 200
+    auth_required: true
+
+auth_revoke:
+    path: /auth/token/{hash}
+    controller: App\Controller\AuthController::revokeToken
+    method: DELETE
+    description: Revoke an API access token
+    request: null
+    response: null
+    status_code: 204
+    auth_required: true
+
+auth_validate:
+    path: /auth/validate
+    controller: App\Controller\AuthController::validateToken
+    method: POST
+    description: Check if sent API access token is valid
+    request: App\Dto\Auth\TokenValidateRequest
+    response: App\Dto\Auth\TokenValidateResponse
+    status_code: 200
+    auth_required: true
+
+# sve ispod treba updateat s novim atributima odozgora...
+
+# Resource types
+
+resource_type_list:
+    path: /types
+    controller: App\Controller\ResourceTypeController::list
+    method: GET
+    description: List all registered resource types
+
+resource_type_check:
+    path: /types/{name}
+    controller: App\Controller\ResourceTypeController::get
+    method: GET
+    description: Get status of a resource type
+
+resource_type_register:
+    path: /types
+    controller: App\Controller\ResourceTypeController::register
+    method: POST
+    description: Register a new resource type
+
+resource_type_unregister:
+    path: /types/{name}
+    controller: App\Controller\ResourceTypeController::unregister
+    method: DELETE
+    description: Unregister a resource type
+
+# Resources
+
+resource_get:
+    path: /resources/{type}/{id}
+    controller: App\Controller\ResourceController::get
+    method: GET
+    description: Get resource by id
+
+resource_list:
+    path: /resources/{type}
+    controller: App\Controller\ResourceController::list
+    method: GET
+    description: List all resources
+
+resource_create:
+    path: /resources/{type}
+    controller: App\Controller\ResourceController::create
+    method: POST
+    description: Create a new resource
+
+resource_update:
+    path: /resources/{type}/{id}
+    controller: App\Controller\ResourceController::update
+    method: PUT
+    description: Update a resource
+
+resource_delete:
+    path: /resources/{type}/{id}
+    controller: App\Controller\ResourceController::delete
+    method: DELETE
+    description: Delete a resource
+
+resource_truncate:
+    path: /resources/truncate/{type}
+    controller: App\Controller\ResourceController::truncate
+    method: DELETE
+    description: Delete all resources of a type
