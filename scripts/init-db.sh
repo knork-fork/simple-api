@@ -15,6 +15,10 @@ fi
 
 echo "Running init-db.sh for ${db_name}..."
 
+# Drop all processes connected to the database
+docker exec -e PGPASSWORD=simpleapi_pass -i simpleapi-db \
+    psql -U simpleapi_user -h simpleapi-postgres -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${db_name}' AND pid <> pg_backend_pid();"
+
 # Drop database if it existed
 docker exec -e PGPASSWORD=simpleapi_pass -i simpleapi-db \
     psql -U simpleapi_user -h simpleapi-postgres -d postgres -c "DROP DATABASE IF EXISTS ${db_name};"

@@ -6,6 +6,7 @@ use App\Tests\Fixtures\Fixture;
 
 const FIXTURES_DIR = '/application/tests/Fixtures';
 
+putenv('FIXTURE_ENV=true');
 require_once '/application/src/init.php';
 
 // Scan fixtures dir for all classes that extend Fixture and then load them in the correct order

@@ -36,6 +36,9 @@ services:
             POOL_MODE: transaction
             MAX_CLIENT_CONN: 100
             DEFAULT_POOL_SIZE: 20
+            LISTEN_PORT: 5435
+        volumes:
+            - ./pgbouncer_userlist.txt:/etc/pgbouncer/userlist.txt:ro
 
 
     webserver:

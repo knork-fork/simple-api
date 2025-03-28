@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\System\Database\Connection;
 use KnorkFork\LoadEnvironment\Environment;
 
 // Load Composer autoloader
@@ -13,9 +14,15 @@ if (getenv('ALLOW_ENV_OVERRIDE') === 'true') {
     if (isset($_SERVER['HTTP_X_APP_ENV']) && $_SERVER['HTTP_X_APP_ENV'] === 'test') {
         $overrideEnvToTest = true;
     }
+    if (getenv('FIXTURE_ENV') === 'true') {
+        $overrideEnvToTest = true;
+    }
 }
 if ($overrideEnvToTest) {
     Environment::load(__DIR__ . '/../.env', ['test']);
 } else {
     Environment::load(__DIR__ . '/../.env');
 }
+
+// Load database connection
+Connection::getInstance();
