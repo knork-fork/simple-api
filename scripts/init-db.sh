@@ -45,5 +45,12 @@ fi
 # Run fixtures for test environment
 if [[ $1 = "test" ]]
 then
-	docker exec -it simpleapi-php-fpm php /application/tests/run_fixtures.php
+    echo "Running fixtures..."
+	docker exec simpleapi-php-fpm php /application/tests/run_fixtures.php
+    if [[ $? -ne 0 ]]
+    then
+        echo "Failed running fixtures."
+        exit 2
+    fi
+    echo "Fixtures done."
 fi
