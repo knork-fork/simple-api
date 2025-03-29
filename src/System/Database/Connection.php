@@ -5,12 +5,13 @@ namespace App\System\Database;
 
 use KnorkFork\LoadEnvironment\Environment;
 use PDO;
+use PDOException;
 
 final class Connection
 {
     private static ?Connection $instance = null;
 
-    public readonly PDO $pdo;
+    private PDO $pdo;
 
     public function __construct()
     {
@@ -30,6 +31,24 @@ final class Connection
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]
         );
+    }
+
+    /**
+     * @param mixed[] $params
+     *
+     * @return mixed[]
+     *
+     * @throws PDOException
+     */
+    public function query(string $sql, array $params = []): array
+    {
+        $stmt = $this->pdo->prepare($sql);
+        if ($stmt === false) {
+            throw new PDOException('Failed to prepare statement');
+        }
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
     }
 
     public static function getInstance(): self

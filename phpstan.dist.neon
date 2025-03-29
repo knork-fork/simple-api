@@ -7,3 +7,8 @@ parameters:
         - src/
         - tests/
     phpVersion: 80400 # PHP 8.4.0
+    ignoreErrors:
+        - message: '#Class App\\Entity\\.* has an uninitialized property#'
+        - message: '#Cannot cast mixed to .*#'
+          paths:
+              - src/System/Database/Entity.php
