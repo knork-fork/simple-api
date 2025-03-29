@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Controller;
 use App\Tests\Common\FunctionalTestCase;
 use App\Tests\Common\Request;
 use App\Tests\Common\Response;
+use App\Tests\Fixtures\TokenFixture;
 use App\Tests\Fixtures\UserFixture;
 
 /**
@@ -58,5 +59,44 @@ final class AuthControllerTest extends FunctionalTestCase
         self::assertArrayHasKey('error', $json);
         self::assertIsString($json['error']);
         self::assertSame('Failed to save user', $json['error']);
+    }
+
+    public function testListTokensWithNoAuthReturnsUnauthorized(): void
+    {
+        $response = $this->makeRequest(
+            Request::METHOD_GET,
+            '/auth/token'
+        );
+
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_UNAUTHORIZED);
+        self::assertArrayHasKey('error', $json);
+        self::assertIsString($json['error']);
+        self::assertSame('Missing or invalid auth header', $json['error']);
+    }
+
+    public function testListTokensReturnsResponse(): void
+    {
+        $response = $this->makeRequest(
+            Request::METHOD_GET,
+            '/auth/token',
+            [],
+            [
+                'Access-Token: ' . TokenFixture::TEST_TOKEN,
+            ]
+        );
+
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_OK);
+        self::assertTrue(\count($json) > 0);
+
+        $token = $json[0];
+        self::assertIsArray($token);
+        self::assertArrayHasKey('user_id', $token);
+        self::assertArrayHasKey('token_hash', $token);
+        self::assertArrayHasKey('token_id', $token);
+        self::assertArrayHasKey('token_lookup', $token);
+        self::assertArrayHasKey('description', $token);
+        self::assertArrayHasKey('created_at', $token);
+        self::assertArrayHasKey('expires_at', $token);
+        // self::assertArrayHasKey('scope', $token);
     }
 }

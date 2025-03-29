@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use App\Exception\BadRequestException;
 use App\Exception\NotFoundException;
+use App\Exception\UnauthorizedException;
 use App\Response\ExceptionResponse;
 use App\System\Router;
 use Symfony\Component\Yaml\Yaml;
@@ -25,7 +26,9 @@ try {
     $router->callEndpoint();
 } catch (Throwable $e) {
     // Suppress user-caused exceptions being thrown and logged
-    $suppressThrow = $e instanceof NotFoundException || $e instanceof BadRequestException;
+    $suppressThrow = $e instanceof NotFoundException
+        || $e instanceof BadRequestException
+        || $e instanceof UnauthorizedException;
 
     $exception = new ExceptionResponse($e, $suppressThrow);
     $exception->output();

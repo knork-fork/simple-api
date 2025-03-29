@@ -9,6 +9,7 @@ use App\Entity\Token;
 use App\Entity\User;
 use App\Exception\BadRequestException;
 use App\Response\JsonResponse;
+use App\System\Auth;
 use RuntimeException;
 
 final class AuthController
@@ -45,5 +46,15 @@ final class AuthController
         );
 
         return new JsonResponse($tokenResponse->toArray());
+    }
+
+    public static function listTokens(): JsonResponse
+    {
+        /** @var int $user_id */
+        $user_id = Auth::getAuthenticatedUserId();
+
+        $tokens = (new Token())->getArrayBy('user_id', $user_id);
+
+        return new JsonResponse($tokens);
     }
 }

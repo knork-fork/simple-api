@@ -128,4 +128,18 @@ abstract class Entity
 
         return $this->hydrate($result[0]);
     }
+
+    /**
+     * @return mixed[]
+     */
+    public function getArrayBy(string $property, mixed $value): array
+    {
+        $query = \sprintf(
+            'SELECT * FROM %s WHERE %s = :value',
+            $this->tableName,
+            $property
+        );
+
+        return $this->connection->query($query, ['value' => $value]);
+    }
 }

@@ -26,3 +26,12 @@ auth_token:
     request: App\Dto\Auth\TokenIssueRequest
     status_code: 201
     auth_required: false
+
+auth_list:
+    path: /auth/token
+    controller: App\Controller\AuthController::listTokens
+    method: GET
+    description: List hashes of active API access tokens
+    request: null
+    status_code: 200
+    auth_required: true
