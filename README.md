@@ -49,6 +49,8 @@ Same username and secret combination will always return a token for the same dat
 If you ever need to share access, share only the generated tokens, not your secret.
 Tokens can be revoked at any time and may optionally include an expiration date.
 
+> ⚠️ Secrets are used only for generating tokens. All other operations are done using the access tokens.
+
 ##### Get a User Token
 
 Send a POST request to `/auth/token` with following payload:
