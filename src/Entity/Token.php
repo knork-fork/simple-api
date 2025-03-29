@@ -10,14 +10,15 @@ final class Token extends Entity
     public int $user_id;
     public string $token_hash;
     public string $token_id;
-    public string $description = '';
+    public string $token_lookup;
+    public ?string $description = null;
     public ?string $expires_at = null;
 
     private string $token;
 
     public static function getToken(): self
     {
-        $token = new Token();
+        $token = new self();
 
         $token->generateToken();
 
@@ -36,7 +37,10 @@ final class Token extends Entity
     private function generateToken(): void
     {
         $this->token = bin2hex(random_bytes(32));
-        $this->token_hash = password_hash($this->token, PASSWORD_BCRYPT);
+        $this->token_hash = password_hash($this->token, \PASSWORD_BCRYPT);
         $this->token_id = bin2hex(random_bytes(8));
+
+        // last 12 characters of the token are used for lookup (database querying)
+        $this->token_lookup = substr($this->token, -12);
     }
 }

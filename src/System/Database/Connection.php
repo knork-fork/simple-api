@@ -6,6 +6,7 @@ namespace App\System\Database;
 use KnorkFork\LoadEnvironment\Environment;
 use PDO;
 use PDOException;
+use RuntimeException;
 
 final class Connection
 {
@@ -44,9 +45,14 @@ final class Connection
     {
         $stmt = $this->pdo->prepare($sql);
         if ($stmt === false) {
-            throw new PDOException('Failed to prepare statement');
+            throw new RuntimeException('Failed to prepare statement');
         }
-        $stmt->execute($params);
+
+        try {
+            $stmt->execute($params);
+        } catch (PDOException $e) {
+            throw new RuntimeException('Failed to fetch results: ' . $e->getMessage());
+        }
 
         return $stmt->fetchAll();
     }
