@@ -3,7 +3,7 @@ CREATE TABLE users (
     username TEXT NOT NULL UNIQUE,
     secret_hash TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (secret_hash)
+    UNIQUE (username)
 );
 
 CREATE TABLE tokens (
