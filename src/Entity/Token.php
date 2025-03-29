@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use App\System\Database\Entity;
+
+final class Token extends Entity
+{
+    public int $user_id;
+    public string $token_hash;
+    public string $token_id;
+    public string $description = '';
+    public ?string $expires_at = null;
+
+    private string $token;
+
+    public static function getToken(): self
+    {
+        $token = new Token();
+
+        $token->generateToken();
+
+        return $token;
+    }
+
+    public function getUnhashedToken(): ?string
+    {
+        if (isset($this->token)) {
+            return $this->token;
+        }
+
+        return null;
+    }
+
+    private function generateToken(): void
+    {
+        $this->token = bin2hex(random_bytes(32));
+        $this->token_hash = password_hash($this->token, PASSWORD_BCRYPT);
+        $this->token_id = bin2hex(random_bytes(8));
+    }
+}

@@ -10,6 +10,7 @@ CREATE TABLE tokens (
     user_id INTEGER NOT NULL REFERENCES users(id),
     token_hash TEXT NOT NULL,
     token_id TEXT NOT NULL,
+    description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,
     UNIQUE (user_id, token_id)

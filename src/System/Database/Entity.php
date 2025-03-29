@@ -111,4 +111,21 @@ abstract class Entity
         }
         $this->id = (int) $ret[0]['id'];
     }
+
+    public function getBy(string $property, mixed $value): self
+    {
+        $query = \sprintf(
+            'SELECT * FROM %s WHERE %s = :value',
+            $this->tableName,
+            $property
+        );
+
+        $result = $this->connection->query($query, ['value' => $value]);
+
+        if (\count($result) !== 1 || !\is_array($result[0])) {
+            throw new RuntimeException('Failed to get entity');
+        }
+
+        return $this->hydrate($result[0]);
+    }
 }
