@@ -20,7 +20,7 @@ final class AuthController
             'secret_hash' => password_hash($tokenIssueRequest->secret, \PASSWORD_BCRYPT),
         ]);
         try {
-        $user->save();
+            $user->save();
         } catch (RuntimeException $e) {
             throw new BadRequestException('Failed to save user');
         }
