@@ -21,8 +21,6 @@ final class Auth
         }
 
         $token = $headers['Access-Token'];
-
-        /** @var Token $tokenObject */
         $tokenObject = (new Token())->getBy('token_lookup', substr($token, -12));
 
         if (!password_verify($token, $tokenObject->token_hash)) {

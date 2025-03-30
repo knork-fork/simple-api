@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\System\Database;
 
+use PDOException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionObject;
@@ -31,7 +32,7 @@ abstract class Entity
     /**
      * @param mixed[] $data
      */
-    public function hydrate(array $data): self
+    public function hydrate(array $data): static
     {
         foreach ($this->getPublicProperties() as $property) {
             $name = $property->getName();
@@ -112,7 +113,11 @@ abstract class Entity
         $this->id = (int) $ret[0]['id'];
     }
 
-    public function getBy(string $property, mixed $value): self
+    /**
+     * @throws PDOException
+     * @throws RuntimeException
+     */
+    public function getBy(string $property, mixed $value): static
     {
         $query = \sprintf(
             'SELECT * FROM %s WHERE %s = :value',

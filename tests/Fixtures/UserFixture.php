@@ -36,7 +36,6 @@ final class UserFixture extends Fixture
 
     public static function getTestUser(): User
     {
-        /** @var User $user */
         $user = (new User())->getBy('username', self::TEST_USERNAME);
         if ($user->id === null) {
             throw new RuntimeException('Test user not found');
