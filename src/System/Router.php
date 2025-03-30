@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\System;
 
 use App\Exception\NotFoundException;
-use App\Exception\UnauthorizedException;
 use App\Response\Response;
 use RuntimeException;
 
@@ -40,9 +39,8 @@ final class Router
     {
         [$endpoint, $args] = $this->resolveEndpoint();
 
-        $authenicatedUserId = Auth::getAuthenticatedUserId();
-        if ($endpoint->authRequired && $authenicatedUserId === null) {
-            throw new UnauthorizedException('Missing or invalid auth header');
+        if ($endpoint->authRequired) {
+            Auth::getAuthenticatedUserId();
         }
 
         $controller = explode('::', $endpoint->controller);

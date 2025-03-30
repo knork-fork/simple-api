@@ -21,7 +21,6 @@ final class AuthController
 
     public static function listTokens(): JsonResponse
     {
-        /** @var int $user_id */
         $user_id = Auth::getAuthenticatedUserId();
 
         $tokens = (new Token())->getArrayBy('user_id', $user_id);
