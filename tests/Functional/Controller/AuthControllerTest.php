@@ -16,13 +16,25 @@ final class AuthControllerTest extends FunctionalTestCase
 {
     public const TEST_USER_PREFIX = 'test_user_';
 
-    public function testIssueTokenReturnsResponseForValidInput(): void
+    /* route: auth_token */
+
+    public function testIssueTokenReturnsTokenForUniqueUsername(): void
     {
         $uniqueTestUser = uniqid(self::TEST_USER_PREFIX, true);
+        $this->callIssueTokenWithValidInput($uniqueTestUser);
+    }
 
+    public function testIssueTokenReturnsTokenForSameUsernameAndCorrectSecret(): void
+    {
+        // TEST_USERNAME is not unique - it was already used in the UserFixture
+        $this->callIssueTokenWithValidInput(UserFixture::TEST_USERNAME);
+    }
+
+    private function callIssueTokenWithValidInput(string $username): void
+    {
         $data = [
-            'username' => $uniqueTestUser,
-            'secret' => 'password',
+            'username' => $username,
+            'secret' => UserFixture::TEST_USER_SECRET,
             'description' => 'token description',
             'expires' => '2026-03-26T00:00:00Z',
             'is_read_only' => false,
@@ -40,11 +52,11 @@ final class AuthControllerTest extends FunctionalTestCase
         self::assertArrayHasKey('expires', $json);
     }
 
-    public function testIssueTokenReturnsErrorForDuplicateUser(): void
+    public function testIssueTokenReturnsErrorForSameUserAndInvalidSecret(): void
     {
         $data = [
-            'username' => UserFixture::TEST_USERNAME, // not unique
-            'secret' => 'password',
+            'username' => UserFixture::TEST_USERNAME, // username already exists, but used with different secret
+            'secret' => 'incorrect_password',
             'description' => 'token description',
             'expires' => '2026-03-26T00:00:00Z',
             'is_read_only' => false,
@@ -60,6 +72,8 @@ final class AuthControllerTest extends FunctionalTestCase
         self::assertIsString($json['error']);
         self::assertSame('Failed to save user', $json['error']);
     }
+
+    /* route: auth_list */
 
     public function testListTokensWithNoAuthReturnsUnauthorized(): void
     {
