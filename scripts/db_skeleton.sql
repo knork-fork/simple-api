@@ -17,3 +17,5 @@ CREATE TABLE tokens (
     expires_at TIMESTAMP,
     UNIQUE (user_id, token_id)
 );
+
+CREATE INDEX idx_tokens_token_lookup ON tokens(token_lookup);
