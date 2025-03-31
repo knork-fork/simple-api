@@ -39,7 +39,10 @@ docker-compose down
 
 Generate your own secret which will be used to obtain access tokens. Store it securely — it acts as your private key.
 
-You can create a secret manually, or generate one using a secure algorithm like RSA.
+You can create a secret manually, or generate one using a secure algorithm like this:
+```bash
+openssl rand -hex 32
+```
 It’s important that your secret is unique, strong, and never shared.
 
 The server stores a hashed and salted version of your secret, assigns a unique user ID, and creates a dedicated schema for your data.
