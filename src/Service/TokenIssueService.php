@@ -8,6 +8,8 @@ use App\Dto\Auth\TokenIssueResponse;
 use App\Entity\Token;
 use App\Entity\User;
 use App\Exception\BadRequestException;
+use App\System\Auth;
+use App\System\Enum\HashMethod;
 use RuntimeException;
 
 final class TokenIssueService
@@ -19,7 +21,7 @@ final class TokenIssueService
         if ($user === null) {
             $user = $this->createUser($tokenIssueRequest->username, $tokenIssueRequest->secret);
         } else {
-            if (!password_verify($tokenIssueRequest->secret, $user->secret_hash)) {
+            if (!Auth::verifyHash($tokenIssueRequest->secret, $user->secret_hash, HashMethod::Bcrypt)) {
                 // Intentionally misleading error message to prevent user enumeration
                 throw new BadRequestException('Failed to save user');
             }

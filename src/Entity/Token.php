@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\System\Auth;
 use App\System\Database\Entity;
+use App\System\Enum\HashMethod;
 
 final class Token extends Entity
 {
@@ -37,7 +39,7 @@ final class Token extends Entity
     private function generateToken(): void
     {
         $this->token = bin2hex(random_bytes(32));
-        $this->token_hash = password_hash($this->token, \PASSWORD_BCRYPT);
+        $this->token_hash = Auth::getHash($this->token, HashMethod::HMAC);
         $this->token_id = bin2hex(random_bytes(8));
 
         // last 12 characters of the token are used for lookup (database querying)

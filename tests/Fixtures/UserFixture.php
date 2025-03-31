@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Fixtures;
 
 use App\Entity\User;
+use App\System\Auth;
+use App\System\Enum\HashMethod;
 use RuntimeException;
 
 final class UserFixture extends Fixture
@@ -20,18 +22,13 @@ final class UserFixture extends Fixture
     {
         $user = (new User())->hydrate([
             'username' => self::TEST_USERNAME,
-            'secret_hash' => $this->hashSecret(self::TEST_USER_SECRET),
+            'secret_hash' => Auth::getHash(self::TEST_USER_SECRET, HashMethod::Bcrypt),
         ]);
         $user->save();
 
         if ($user->id === null) {
             throw new RuntimeException('Failed to save test user');
         }
-    }
-
-    private function hashSecret(string $secret): string
-    {
-        return password_hash($secret, \PASSWORD_BCRYPT);
     }
 
     public static function getTestUser(): User

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Fixtures;
 
 use App\Entity\Token;
+use App\System\Auth;
+use App\System\Enum\HashMethod;
 use RuntimeException;
 
 final class TokenFixture extends Fixture
@@ -33,7 +35,7 @@ final class TokenFixture extends Fixture
 
         $token = (new Token())->hydrate([
             'user_id' => $user->id,
-            'token_hash' => password_hash(self::TEST_TOKEN, \PASSWORD_BCRYPT),
+            'token_hash' => Auth::getHash(self::TEST_TOKEN, HashMethod::HMAC),
             'token_id' => self::TEST_TOKEN_ID,
             'token_lookup' => self::TOKEN_LOOKUP,
             'description' => 'test token',
