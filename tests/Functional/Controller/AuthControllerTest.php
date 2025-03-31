@@ -113,4 +113,22 @@ final class AuthControllerTest extends FunctionalTestCase
         self::assertArrayHasKey('expires_at', $token);
         // self::assertArrayHasKey('scope', $token);
     }
+
+    /* route: auth_validate */
+
+    public function testValidateTokenWithValidAuthReturnsResponse(): void
+    {
+        $response = $this->makeRequest(
+            Request::METHOD_GET,
+            '/auth/validate',
+            [],
+            [
+                'Access-Token: ' . TokenFixture::TEST_TOKEN,
+            ]
+        );
+
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_OK);
+        self::assertArrayHasKey('valid', $json);
+        self::assertTrue($json['valid']);
+    }
 }

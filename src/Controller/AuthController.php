@@ -27,4 +27,11 @@ final class AuthController
 
         return new JsonResponse($tokens);
     }
+
+    public static function validateToken(): JsonResponse
+    {
+        // No action necessary, Auth::getAuthenticatedUserId() already called in router
+
+        return new JsonResponse(['valid' => true]);
+    }
 }

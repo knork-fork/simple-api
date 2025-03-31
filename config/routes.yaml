@@ -35,3 +35,12 @@ auth_list:
     request: null
     status_code: 200
     auth_required: true
+
+auth_validate:
+    path: /auth/validate
+    controller: App\Controller\AuthController::validateToken
+    method: GET
+    description: Check if sent API access token is valid
+    request: null
+    status_code: 200
+    auth_required: true
