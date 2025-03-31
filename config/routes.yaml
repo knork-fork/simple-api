@@ -36,6 +36,15 @@ auth_list:
     status_code: 200
     auth_required: true
 
+auth_revoke:
+    path: /auth/token/{token_id}
+    controller: App\Controller\AuthController::revokeToken
+    method: DELETE
+    description: Revoke an API access token
+    request: null
+    status_code: 204
+    auth_required: true
+
 auth_validate:
     path: /auth/validate
     controller: App\Controller\AuthController::validateToken

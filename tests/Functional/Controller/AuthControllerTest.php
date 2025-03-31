@@ -30,7 +30,10 @@ final class AuthControllerTest extends FunctionalTestCase
         $this->callIssueTokenWithValidInput(UserFixture::TEST_USERNAME);
     }
 
-    private function callIssueTokenWithValidInput(string $username): void
+    /**
+     * @return array<string, string>
+     */
+    private function callIssueTokenWithValidInput(string $username): array
     {
         $data = [
             'username' => $username,
@@ -45,11 +48,14 @@ final class AuthControllerTest extends FunctionalTestCase
             $data
         );
 
+        /** @var array<string, string> $json */
         $json = $this->decodeJsonFromResponse($response, Response::HTTP_CREATED);
         self::assertArrayHasKey('token_id', $json);
         self::assertArrayHasKey('token', $json);
         self::assertArrayHasKey('description', $json);
         self::assertArrayHasKey('expires', $json);
+
+        return $json;
     }
 
     public function testIssueTokenReturnsErrorForSameUserAndInvalidSecret(): void
@@ -112,6 +118,63 @@ final class AuthControllerTest extends FunctionalTestCase
         self::assertArrayHasKey('created_at', $token);
         self::assertArrayHasKey('expires_at', $token);
         // self::assertArrayHasKey('scope', $token);
+    }
+
+    /* route: auth_revoke */
+
+    public function testRevokeTokenDeletesToken(): void
+    {
+        // Create a token with new user
+        $token = $this->callIssueTokenWithValidInput(uniqid(self::TEST_USER_PREFIX, true));
+        $token_id = $token['token_id'];
+        $token = $token['token'];
+
+        // Delete the token
+        $response = $this->makeRequest(
+            Request::METHOD_DELETE,
+            '/auth/token/' . $token_id,
+            [],
+            [
+                'Access-Token: ' . $token,
+            ]
+        );
+        self::assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+
+        // Check if token is deleted by calling auth_validate with the same token
+        $response = $this->makeRequest(
+            Request::METHOD_GET,
+            '/auth/validate',
+            [],
+            [
+                'Access-Token: ' . $token,
+            ]
+        );
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_UNAUTHORIZED);
+        self::assertArrayHasKey('error', $json);
+        self::assertIsString($json['error']);
+        self::assertSame('Missing or invalid auth header', $json['error']);
+    }
+
+    public function testRevokeTokenForNonownedTokenReturnsForbidden(): void
+    {
+        // Create a token with new user
+        $token = $this->callIssueTokenWithValidInput(uniqid(self::TEST_USER_PREFIX, true));
+        $token_id = $token['token_id'];
+
+        // Try to delete the token with a different user
+        $response = $this->makeRequest(
+            Request::METHOD_DELETE,
+            '/auth/token/' . $token_id,
+            [],
+            [
+                'Access-Token: ' . TokenFixture::TEST_TOKEN,
+            ]
+        );
+
+        $json = $this->decodeJsonFromResponse($response, Response::HTTP_FORBIDDEN);
+        self::assertArrayHasKey('error', $json);
+        self::assertIsString($json['error']);
+        self::assertSame('You are not allowed to revoke this token', $json['error']);
     }
 
     /* route: auth_validate */

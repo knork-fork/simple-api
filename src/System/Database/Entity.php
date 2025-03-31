@@ -113,6 +113,21 @@ abstract class Entity
         $this->id = (int) $ret[0]['id'];
     }
 
+    public function delete(): void
+    {
+        if ($this->id === null) {
+            throw new RuntimeException('Entity not saved');
+        }
+
+        $query = \sprintf(
+            'DELETE FROM %s WHERE id = :id',
+            $this->tableName
+        );
+
+        $this->connection->query($query, ['id' => $this->id]);
+        $this->id = null;
+    }
+
     /**
      * @throws PDOException
      * @throws RuntimeException

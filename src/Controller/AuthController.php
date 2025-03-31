@@ -5,8 +5,11 @@ namespace App\Controller;
 
 use App\Dto\Auth\TokenIssueRequest;
 use App\Entity\Token;
+use App\Exception\ForbiddenException;
 use App\Response\JsonResponse;
+use App\Response\NoContentResponse;
 use App\Service\TokenIssueService;
+use App\Service\TokenScopeService;
 use App\System\Auth;
 
 final class AuthController
@@ -26,6 +29,19 @@ final class AuthController
         $tokens = (new Token())->getArrayBy('user_id', $user_id);
 
         return new JsonResponse($tokens);
+    }
+
+    public static function revokeToken(string $token_id): NoContentResponse
+    {
+        $token = (new Token())->getBy('token_id', $token_id);
+
+        if (TokenScopeService::canTokenEditTokens($token) === false) {
+            throw new ForbiddenException('You are not allowed to revoke this token');
+        }
+
+        $token->delete();
+
+        return new NoContentResponse();
     }
 
     public static function validateToken(): JsonResponse
